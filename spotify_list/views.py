@@ -130,11 +130,16 @@ def download_file(request, yt_id):
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download(['http://www.youtube.com/watch?v='+yt_id])
 
-    fsock = open('/var/www/django_spotify/django_spotify/'+filename, 'r')
-    response = HttpResponse(fsock, content_type='audio/mpeg')
-    response['Content-Disposition'] = "attachment; filename=%s.mp3" % (filename)
-    return response
+    # fsock = open('/var/www/django_spotify/django_spotify/'+filename, 'r')
+    # response = HttpResponse(fsock, content_type='audio/mpeg')
+    # response['Content-Disposition'] = "attachment; filename=%s.mp3" % (filename)
+    # return response
 
+    response = HttpResponse()
+    response['Content-Type'] = 'application/mp3'
+    response['X-Accel-Redirect'] = '/files/' + filenamename
+    response['Content-Disposition'] = 'attachment;filename=' + filename
+    return response
 
 def download_and_parse_csvs(request):
 
