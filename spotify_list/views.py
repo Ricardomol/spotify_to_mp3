@@ -137,7 +137,7 @@ def download_file(request, yt_id):
 
     response = HttpResponse()
     response['Content-Type'] = 'application/mp3'
-    response['X-Accel-Redirect'] = '/files/' + filenamename
+    response['X-Accel-Redirect'] = '/files/' + filename
     response['Content-Disposition'] = 'attachment;filename=' + filename
     return response
 
