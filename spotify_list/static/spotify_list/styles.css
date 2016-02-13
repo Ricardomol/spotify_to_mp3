@@ -25,7 +25,11 @@ a:visited {
 }
 
 .header{
-	border-bottom: solid 1px #CDCDCD;
+  font-weight: bold;
+	padding-bottom: 0.75em;
+  margin-bottom: 0.75em;
+  border-bottom: solid 2px #CDCDCD;
+  text-align: center;
 }
 
 .logout{
@@ -93,8 +97,8 @@ article {
     position: absolute;
     left: 0;
     bottom: 0;
-    height: 40px;
-    /* width: 100%; */
+    height: 35px;
+    width: 100%;
     margin-top: 1em;
     text-align: center;
     border-top: solid 1px #999999;
@@ -171,3 +175,19 @@ article {
   background-color: #058ebd;
 }
 /* Overline From Center */
+
+
+.dropdown-toggle, .dropdown-menu {
+  font-size: 1em;
+}
+
+.btn-lg {
+  margin-left: 0.75em;
+  margin-right: 0.75em;
+}
+
+.embedded-yt, .embedded-spotify {
+  margin-top: 1em;
+  text-align: center;
+  background-color: #CDCDCD;
+}

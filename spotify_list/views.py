@@ -30,35 +30,35 @@ YOUTUBE_API_VERSION = "v3"
 
 
 def youtube_search(search_string, max_results):
-  youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
-    developerKey=DEVELOPER_KEY)
+	youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
+	developerKey=DEVELOPER_KEY)
 
-  # Call the search.list method to retrieve results matching the specified
-  # query term.
-  search_response = youtube.search().list(
-    q=search_string,
-    part="id,snippet",
-    maxResults=max_results
-  ).execute()
+	# Call the search.list method to retrieve results matching the specified
+	# query term.
+	search_response = youtube.search().list(
+									q=search_string,
+									part="id,snippet",
+									maxResults=max_results
+									).execute()
 
-  videos = []
-  channels = []
-  playlists = []
+	videos = []
+	channels = []
+	playlists = []
 
-  # Add each result to the appropriate list, and then display the lists of
-  # matching videos, channels, and playlists.
-  search_result = None
-  for search_result in search_response.get("items", []):
-    if search_result["id"]["kind"] == "youtube#video":
-      videos.append("%s (%s)" % (search_result["snippet"]["title"],
-                                 search_result["id"]["videoId"]))                                                                                                                      
+	# Add each result to the appropriate list, and then display the lists of
+	# matching videos, channels, and playlists.
+	search_result = None
+	for search_result in search_response.get("items", []):
+		if search_result["id"]["kind"] == "youtube#video":
+			videos.append("%s (%s)" % (search_result["snippet"]["title"],
+										search_result["id"]["videoId"]))
 
-  print "Videos:\n", "\n".join(videos), "\n"
+	print "Videos:\n", "\n".join(videos), "\n"
 
-  if search_result is not None and 'videoId' in search_result['id']:
-    return (search_result['id']['videoId'])
-  else:
-    return("")
+	if search_result is not None and 'videoId' in search_result['id']:
+		return (search_result['id']['videoId'])
+	else:
+		return("")
 
 
 def index(request, country="global"):
@@ -97,14 +97,12 @@ def index(request, country="global"):
     return render(request, 'spotify_list/index.html', context)
 
 
-#@app.route('/downloads/<string:yt_id>')
 def download_file(request, yt_id):
 
     def remove_accents(mystr):
         """Changes accented characters (áüç...) to their unaccented counterparts (auc...)."""
         s = ''.join((c for c in unicodedata.normalize('NFD',unicode(mystr)) if unicodedata.category(c) != 'Mn'))
         return s.decode()
-
 
     def hooks(data):
         if data['status'] == 'finished':
@@ -115,7 +113,6 @@ def download_file(request, yt_id):
             print ("remove_accents(data['filename']) = %s" % data['filename'])
             filename = os.path.splitext(filename)[0]+'.mp3'
             return filename
-
 
     ydl_opts = {
         'format': 'bestaudio/best',
@@ -140,6 +137,7 @@ def download_file(request, yt_id):
     response['X-Accel-Redirect'] = '/files/' + filename
     response['Content-Disposition'] = 'attachment;filename=' + filename
     return response
+
 
 def download_and_parse_csvs(request):
 
