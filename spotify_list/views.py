@@ -1,16 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# Create your views here.
-
-#def index (request):
-#	context = {'clave': 'valor'}
-#	return render(request, 'spotify_list/index.html', context)
-
-
-########### start Flask views.py
-
-
-
 from __future__ import unicode_literals
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -72,78 +61,6 @@ def youtube_search(search_string, max_results):
     return("")
 
 
-
-# #@app.route("/")
-# #@app.route("/<string:country>")
-# def index(request, country="global"):
-
-#     # Download the CSV file from Spotify
-#     if country == "do":
-#         #url = 'https://spotifycharts.com/api/?download=true&limit=50&country=do&recurrence=daily&date=latest&type=viral'
-#         url = 'https://spotifycharts.com/api/?download=true&limit=50&country=do&recurrence=daily&date=latest&type=regional'
-#     elif country == "spain":
-#         #url = 'https://spotifycharts.com/api/?download=true&limit=50&country=es&recurrence=daily&date=latest&type=viral'
-#         url = 'https://spotifycharts.com/api/?download=true&limit=50&country=es&recurrence=daily&date=latest&type=regional'
-#     elif country == "usa":
-#         #url = 'https://spotifycharts.com/api/?download=true&limit=50&country=us&recurrence=daily&date=latest&type=viral'
-#         url = 'https://spotifycharts.com/api/?download=true&limit=50&country=us&recurrence=daily&date=latest&type=regional'
-#     elif country == "global":
-#         #url = 'https://spotifycharts.com/api/?download=true&limit=50&country=global&recurrence=daily&date=latest&type=viral'
-#         url = 'https://spotifycharts.com/api/?download=true&limit=50&country=global&recurrence=daily&date=latest&type=regional'
-#     else:
-#         #url = 'https://spotifycharts.com/api/?download=true&limit=50&country=global&recurrence=daily&date=latest&type=viral'
-#         url = 'https://spotifycharts.com/api/?download=true&limit=50&country=global&recurrence=daily&date=latest&type=regional'
-#     csvfile = wget.download(url)
-
-#     # Parse the CSV file
-#     song_fields = ['position', 'title', 'artist', 'spotify_id', 'yt_id']
-#     songs = []
-#     with open(csvfile, 'rb') as csvfile:
-#         reader = csv.reader(csvfile, delimiter=str(u','), quotechar=str(u'"'))
-#         for row  in reader:
-#             song_dict = {}
-#             for i, e in enumerate(row):
-#                 # print ("Elemento %s = %s" % (i, e))
-#                 song_dict[song_fields[i]] = e.decode('utf-8')
-#                 if i == len(row) - 1:
-#                     # Extraer el spotify_id de la url leida del archivo CSV
-#                     song_dict[song_fields[i]] = e.decode('utf-8').rsplit('/', 1)[-1]
-#             print "Pre primer try"
-#             # buscar en Youtube el video correspondiente a cada canción
-#             print ("song_dict['title'] = %s" % song_dict['title'])
-#             print ("song_dict['artist'] = %s" % song_dict['artist'])
-#             try:
-# 				song_dict[song_fields[len(song_fields)-1]] = youtube_search(song_dict['title']+' '+song_dict['artist'], 1)
-
-# 				try:
-# 					s = Songs(position = 69,
-# 								title = song_dict['title'],
-# 				    			artist = song_dict['artist'],
-# 				    			yt_id = song_dict['yt_id'],
-# 				    			spotify_id = song_dict['spotify_id'])
-# 					s.save()
-# 				except ValueError, e:
-# 					print "Pass"
-
-#       	    except HttpError, e:
-#         		print "An HTTP error %d occurred:\n%s" % (e.resp.status, e.content)
-#     	    # fin busqueda en youtube
-
-
-#             songs.append(song_dict)
-#             print ""
-
-#     #return render_template('index.html', country=country, songs=songs)
-#     context = {}
-#     context['country'] = country
-#     context['songs'] = songs
-#     return render(request, 'spotify_list/index.html', context)
-
-
-
-
-#@app.route("/")
-#@app.route("/<string:country>")
 def index(request, country="global"):
 
     # Download the CSV file from Spotify
@@ -153,6 +70,8 @@ def index(request, country="global"):
         pl_search_term = 'Top 50 es'
     elif country == "usa":
 		pl_search_term = 'Top 50 us'
+    elif country == "uk":
+		pl_search_term = 'Top 50 gb'
     elif country == "global":
 		pl_search_term = 'Top 50 global'
     else:
@@ -216,12 +135,10 @@ def download_file(request, yt_id):
     response['Content-Disposition'] = "attachment; filename=%s.mp3" % (filename)
     return response
 
-########### end flask views.py
-
 
 def download_and_parse_csvs(request):
 
-	countries = ['global', 'es', 'us', 'do']
+	countries = ['global', 'es', 'us', 'do', 'gb']
 
 	song_fields = ['position', 'title', 'artist', 'streams', 'spotify_id', 'yt_id']
 
@@ -281,6 +198,7 @@ def download_and_parse_csvs(request):
 	context['country'] = country
 	context['songs'] = songs
 	return render(request, 'spotify_list/update_lists.html', context)
+
 
 def borrar_mp3_y_csv (request):
 
