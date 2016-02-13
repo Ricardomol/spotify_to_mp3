@@ -191,3 +191,11 @@ article {
   text-align: center;
   background-color: #CDCDCD;
 }
+
+@media only screen 
+  and (min-device-width: 320px) 
+  and (max-device-width: 667px){
+    .btn {
+      font-size: 30px;
+    }
+}
