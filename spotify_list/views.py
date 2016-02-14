@@ -53,7 +53,7 @@ def youtube_search(search_string, max_results):
 			videos.append("%s (%s)" % (search_result["snippet"]["title"],
 										search_result["id"]["videoId"]))
 
-	print "Videos:\n", "\n".join(videos), "\n"
+	# print "Videos:\n", "\n".join(videos), "\n"
 
 	if search_result is not None and 'videoId' in search_result['id']:
 		return (search_result['id']['videoId'])
