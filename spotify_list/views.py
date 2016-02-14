@@ -124,6 +124,7 @@ def download_file(request, yt_id):
         'progress_hooks': [hooks],
         'outtmpl': '%(title)s.%(ext)s'
     }
+    print "******************++ EN DOWNLOAD FILE 1.5"
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         print "******************++ EN DOWNLOAD FILE 2"
         ydl.download(['http://www.youtube.com/watch?v='+yt_id])
