@@ -129,21 +129,21 @@ def download_file(request, yt_id):
         print "******************++ EN DOWNLOAD FILE 2"
         ydl.download(['http://www.youtube.com/watch?v='+yt_id])
 
-    print "******************++ EN DOWNLOAD FILE 1"
+    print "******************++ EN DOWNLOAD FILE 3"
 
-    fsock = open('/var/www/django_spotify/django_spotify/'+filename, 'r')
-    response = HttpResponse(fsock, content_type='audio/mpeg')
-    response['Content-Disposition'] = "attachment; filename=%s.mp3" % (filename)
-    return response
-
-    # try:
-    #     response = HttpResponse()
-    #     response['Content-Type'] = 'application/mp3'
-    #     response['X-Accel-Redirect'] = '/files/' + filename
-    #     response['Content-Disposition'] = 'attachment;filename=' + filename
-    # except Exception:
-    #     raise Http404
+    # fsock = open('/var/www/django_spotify/django_spotify/'+filename, 'r')
+    # response = HttpResponse(fsock, content_type='audio/mpeg')
+    # response['Content-Disposition'] = "attachment; filename=%s.mp3" % (filename)
     # return response
+
+    try:
+        response = HttpResponse()
+        response['Content-Type'] = 'application/mp3'
+        response['X-Accel-Redirect'] = '/files/' + filename
+        response['Content-Disposition'] = 'attachment;filename=' + filename
+    except Exception:
+        raise Http404
+    return response
 
 
 def download_and_parse_csvs(request):
