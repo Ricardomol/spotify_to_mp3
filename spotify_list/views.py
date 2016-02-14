@@ -98,7 +98,7 @@ def index(request, country="global"):
 
 
 def download_file(request, yt_id):
-
+	print "******************++ EN DOWNLOAD FILE 1"
     def remove_accents(mystr):
         """Changes accented characters (áüç...) to their unaccented counterparts (auc...)."""
         s = ''.join((c for c in unicodedata.normalize('NFD',unicode(mystr)) if unicodedata.category(c) != 'Mn'))
@@ -125,7 +125,10 @@ def download_file(request, yt_id):
         'outtmpl': '%(title)s.%(ext)s'
     }
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+    	print "******************++ EN DOWNLOAD FILE 2"
         ydl.download(['http://www.youtube.com/watch?v='+yt_id])
+
+    print "******************++ EN DOWNLOAD FILE 1"
 
     # fsock = open('/var/www/django_spotify/django_spotify/'+filename, 'r')
     # response = HttpResponse(fsock, content_type='audio/mpeg')
