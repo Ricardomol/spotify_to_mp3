@@ -132,11 +132,14 @@ def download_file(request, yt_id):
     # response['Content-Disposition'] = "attachment; filename=%s.mp3" % (filename)
     # return response
 
-    response = HttpResponse()
-    response['Content-Type'] = 'application/mp3'
-    response['X-Accel-Redirect'] = '/files/' + filename
-    response['Content-Disposition'] = 'attachment;filename=' + filename
-    return response
+	try:
+		response = HttpResponse()
+		response['Content-Type'] = 'application/mp3'
+		response['X-Accel-Redirect'] = '/files/' + filename
+		response['Content-Disposition'] = 'attachment;filename=' + filename
+	except Exception:
+		raise Http404
+	return response
 
 
 def download_and_parse_csvs(request):
