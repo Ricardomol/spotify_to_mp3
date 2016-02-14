@@ -14,8 +14,6 @@ class Songs (models.Model):
 class Playlists (models.Model):
 	title = models.CharField(max_length=80)
 	songs = models.ForeignKey(Songs)
-	spotify_id = models.CharField(max_length=40)
-	yt_id = models.CharField(max_length=20, default='NA')
 
 class Genres (models.Model):
 	title = models.CharField(max_length=30)

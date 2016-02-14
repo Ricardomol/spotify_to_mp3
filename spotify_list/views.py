@@ -65,17 +65,17 @@ def index(request, country="global"):
 
     # Download the CSV file from Spotify
     if country == "do":
-    	pl_search_term = 'Top 50 do'
+    	pl_search_term = 'Top 100 do'
     elif country == "spain":
-        pl_search_term = 'Top 50 es'
+        pl_search_term = 'Top 100 es'
     elif country == "usa":
-		pl_search_term = 'Top 50 us'
+		pl_search_term = 'Top 100 us'
     elif country == "uk":
-		pl_search_term = 'Top 50 gb'
+		pl_search_term = 'Top 100 gb'
     elif country == "global":
-		pl_search_term = 'Top 50 global'
+		pl_search_term = 'Top 100 global'
     else:
-    	pl_search_term = 'Top 50 global'
+    	pl_search_term = 'Top 100 global'
 
     pls = Playlists.objects.filter(title = pl_search_term)
 
@@ -151,9 +151,9 @@ def download_and_parse_csvs(request):
 
 	for country in countries:
 
-		url = 'https://spotifycharts.com/api/?download=true&limit=50&country='+country+'&recurrence=daily&date=latest&type=regional'
+		url = 'https://spotifycharts.com/api/?download=true&limit=100&country='+country+'&recurrence=daily&date=latest&type=regional'
 
-		pl_title = "Top 50 " + country
+		pl_title = "Top 100 " + country
 		pl_spotify_id = "NA"
 
 		# Download the CSV file from Spotify
