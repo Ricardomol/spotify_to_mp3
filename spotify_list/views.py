@@ -186,9 +186,7 @@ def download_and_parse_csvs(request):
 						s.save()
 
 						pl = Playlists(title = pl_title,
-										songs = s,
-										spotify_id = song_dict['spotify_id'],
-										yt_id = song_dict['yt_id'])
+										songs = s)
 						pl.save()
 					except ValueError, e:
 						print "Pass"
