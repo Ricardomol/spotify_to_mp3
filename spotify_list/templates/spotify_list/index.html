@@ -38,16 +38,40 @@
     </h1>
 
     <div ng-app="instantSearch" ng-init="items={{songs | json}}">
-      <div class="bar">
-        <input type="text" size="40" ng-model="searchString" placeholder="Escribe la canción que buscas..." />
+      <div class="bar buscador">
+        <input type="text" size="40" ng-model="searchString" placeholder="¿Buscas alguna canción?" />
       </div>
-      <ul>
+      <!-- <ul>
         <li ng-repeat="i in items | searchFor: searchString">
           <div ng-bind-template="{% verbatim %}{{i.title}}{% endverbatim %}">
             {% verbatim %}{{i.title}}{% endverbatim %}
           </div>
         </li>
-      </ul>
+      </ul> -->
+      <div ng-repeat="i in items | searchFor: searchString">
+        <div class="song-container">
+          <h3 ng-bind-template="{% verbatim %}#{{i.position}}: {{i.title}} (de: {{i.artist}}){% endverbatim %}">
+            <b>{% verbatim %}#{{i.position}}: {{i.title}} (de: {{i.artist}}){% endverbatim %}</b>
+          </h3>
+          <button type="button" class="btn btn-default btn-lg spotify" data-spotify_id="{% verbatim %}{{ i.spotify_id }}{% endverbatim %}">
+            <span class="glyphicon glyphicon-music" aria-hidden="true"></span> - Escuchar en Spotify
+          </button>
+
+          <button type="button" class="btn btn-default btn-lg yt" data-yt_id= "{% verbatim %}{{ i.yt_id }}{% endverbatim %}">
+            <span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> - Ver vídeo
+          </button>
+
+          <a href="/spotify_list/download_file/{% verbatim %}{{i.yt_id}}{% endverbatim %}">
+          <button type="button" class="btn btn-default btn-lg">
+            <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span> - Descargar MP3
+          </button>
+          </a>
+
+          <div class="embedded-spotify" id="{% verbatim %}{{ i.spotify_id }}{% endverbatim %}"></div>
+          <div class="embedded-yt" id="{% verbatim %}{{ i.yt_id }}{% endverbatim %}"></div>
+        </div>
+      </div>
+      <br/>
     </div>
 
     <!--       {% for song in songs %}
