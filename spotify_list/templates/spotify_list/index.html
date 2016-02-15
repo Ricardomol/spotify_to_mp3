@@ -7,12 +7,15 @@
   <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" type="text/javascript"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
   {% load staticfiles %}
   <link rel="stylesheet" type="text/css" href="{% static 'spotify_list/styles.css' %}">
   <!--[if IE]>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
 </head>
+
+{% load spotify_extras %}
 
 <body id="home">
 
@@ -32,8 +35,22 @@
           <li><a href="/spotify_list/global"}}>Mundial</a></li>
         </ul>
       </span>
-    </h1>  
-    {% for song in songs %}
+    </h1>
+
+    <div ng-app="instantSearch" ng-init="items={{songs | json}}">
+      <div class="bar">
+        <input type="text" size="40" ng-model="searchString" placeholder="Escribe la canción que buscas..." />
+      </div>
+      <ul>
+        <li ng-repeat="i in items | searchFor: searchString">
+          <div ng-bind-template="{% verbatim %}{{i.title}}{% endverbatim %}">
+            {% verbatim %}{{i.title}}{% endverbatim %}
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!--       {% for song in songs %}
       <div>
         <h3><b>#{{ song.position }}: {{ song.title }}</b> (por: {{ song.artist }})</h3>
         <button type="button" class="btn btn-default btn-lg spotify" data-spotify_id="{{ song.spotify_id }}">
@@ -54,7 +71,7 @@
         <div class="embedded-yt" id="{{ song.yt_id }}"></div>
       </div>
       <br>
-    {% endfor %}
+    {% endfor %} -->
     </div>
   </div>
   <div class="clearfix"></div>
@@ -84,8 +101,44 @@
         selected_yt_div.append("<iframe width='640' height='390' allowfullscreen src='http://www.youtube.com/embed/" + selected_yt_id + "?&playsinline=1&autoplay=1" + "'></iframe>");
       });
 
+  });
+
+
+  // Define a new module for our app. The array holds the names of dependencies if any.
+  var app = angular.module("instantSearch", []);
+
+  // Create the instant search filter
+  app.filter('searchFor', function(){
+
+    // All filters must return a function. The first parameter
+    // is the data that is to be filtered, and the second is an
+    // argument that may be passed with a colon (searchFor:searchString)
+
+    return function(arr, searchString){
+
+      if(!searchString){
+        return arr;
+      }
+
+      var result = [];
+
+      searchString = searchString.toLowerCase();
+
+      // Using the forEach helper method to loop through the array
+      angular.forEach(arr, function(item){
+
+        if(item.title.toLowerCase().indexOf(searchString) !== -1){
+          result.push(item);
+        }
+
+      });
+
+      return result;
+    };
 
   });
+  // Instant filter search end.
+
   </script>
 
 </body>

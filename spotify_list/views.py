@@ -91,9 +91,20 @@ def index(request, country="global"):
         song_dict['position'] = pl.songs.position
         songs.append(song_dict)
 
+
+    from django import template
+    import json
+    register = template.Library()
+    register.filter('json', json.dumps)
+
+
+    # import json
     context = {}
+    # context['country'] = json.dumps(country)
+    # context['songs'] = json.dumps(songs)
     context['country'] = country
     context['songs'] = songs
+
     return render(request, 'spotify_list/index.html', context)
 
 
