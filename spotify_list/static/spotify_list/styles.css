@@ -186,6 +186,11 @@ article {
   margin-right: 0.75em;
 }
 
+.primer-boton {
+  margin-left: 0em;
+  margin-right: 0.75em;
+}
+
 .embedded-yt, .embedded-spotify {
   margin-top: 1em;
   text-align: center;

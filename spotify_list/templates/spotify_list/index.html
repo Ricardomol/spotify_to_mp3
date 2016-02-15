@@ -34,24 +34,30 @@
       </span>
     </h1>  
     {% for song in songs %}
-      <div>
-        <h3><b>#{{ song.position }}: {{ song.title }}</b> (por: {{ song.artist }})</h3>
-        <button type="button" class="btn btn-default btn-lg spotify" data-spotify_id="{{ song.spotify_id }}">
-          <span class="glyphicon glyphicon-music" aria-hidden="true"></span> - Escuchar en Spotify
-        </button>
+      <div style="border: solid 1px #cdcdcd; vertical-align:middle">
+        <div style = "float:left; font-size:4em; margin-left: 0.2em; margin-right: 0.4em;">
+          {{ song.position }}
+        </div>
+        <div style = "float:left;">
+          <h3><b>{{ song.title }}</b> (de: {{ song.artist }})</h3>
+          <button type="button" class="btn btn-default btn-lg spotify primer-boton" data-spotify_id="{{ song.spotify_id }}">
+            <span class="glyphicon glyphicon-music" aria-hidden="true"></span> - Escuchar en Spotify
+          </button>
 
-        <button type="button" class="btn btn-default btn-lg yt" data-yt_id= "{{ song.yt_id }}">
-          <span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> - Ver vídeo
-        </button>
+          <button type="button" class="btn btn-default btn-lg yt" data-yt_id= "{{ song.yt_id }}">
+            <span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> - Ver vídeo
+          </button>
 
-        <a href="/spotify_list/download_file/{{song.yt_id}}">
-        <button type="button" class="btn btn-default btn-lg">
-          <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span> - Descargar MP3
-        </button>
-        </a>
+          <a href="/spotify_list/download_file/{{song.yt_id}}">
+          <button type="button" class="btn btn-default btn-lg">
+            <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span> - Descargar MP3
+          </button>
+          </a>
 
-        <div class="embedded-spotify" id="{{ song.spotify_id }}"></div>
-        <div class="embedded-yt" id="{{ song.yt_id }}"></div>
+          <div class="embedded-spotify" id="{{ song.spotify_id }}"></div>
+          <div class="embedded-yt" id="{{ song.yt_id }}"></div>
+        </div>
+        <div class="clearfix"></div>
       </div>
       <br>
     {% endfor %}
