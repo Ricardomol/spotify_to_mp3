@@ -109,7 +109,7 @@ def index(request, country="global"):
 
 
 def download_file(request, yt_id):
-    print "******************++ EN DOWNLOAD FILE 1"
+
     def remove_accents(mystr):
         """Changes accented characters (áüç...) to their unaccented counterparts (auc...)."""
         s = ''.join((c for c in unicodedata.normalize('NFD',unicode(mystr)) if unicodedata.category(c) != 'Mn'))
@@ -135,17 +135,9 @@ def download_file(request, yt_id):
         'progress_hooks': [hooks],
         'outtmpl': '%(title)s.%(ext)s'
     }
-    print "******************++ EN DOWNLOAD FILE 1.5"
+
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        print "******************++ EN DOWNLOAD FILE 2"
         ydl.download(['http://www.youtube.com/watch?v='+yt_id])
-
-    print "******************++ EN DOWNLOAD FILE 3"
-
-    # fsock = open('/var/www/django_spotify/django_spotify/'+filename, 'r')
-    # response = HttpResponse(fsock, content_type='audio/mpeg')
-    # response['Content-Disposition'] = "attachment; filename=%s.mp3" % (filename)
-    # return response
 
     try:
         response = HttpResponse()
