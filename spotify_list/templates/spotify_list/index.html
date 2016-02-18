@@ -127,7 +127,7 @@
         $('.embedded-spotify').empty();
         var selected_spotify_id = $(this).attr("data-spotify_id");
         var selected_spotify_div = $("#" + selected_spotify_id);
-        selected_spotify_div.append("<iframe src='https://embed.spotify.com/?uri=spotify:track:" + selected_spotify_id + "' width='300' height='80' frameborder='0' allowtransparency='true'></iframe>");
+        selected_spotify_div.append("<iframe src='https://embed.spotify.com/?uri=spotify:track:" + selected_spotify_id + "' width='640' height='80' frameborder='0' allowtransparency='true'></iframe>");
       });
       
       $('.yt').click(function(e){
