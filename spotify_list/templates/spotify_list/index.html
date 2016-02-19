@@ -83,13 +83,7 @@
         <div class="bar buscador">
           <input type="text" size="40" ng-model="searchString" placeholder="¿Buscas alguna canción?" />
         </div>
-        <!-- <ul>
-          <li ng-repeat="i in items | searchFor: searchString">
-            <div ng-bind-template="{% verbatim %}{{i.title}}{% endverbatim %}">
-              {% verbatim %}{{i.title}}{% endverbatim %}
-            </div>
-          </li>
-        </ul> -->
+
         <div ng-repeat="i in items | searchFor: searchString">
           <div class="song-container">
             <h3 ng-bind-template="{% verbatim %}#{{i.position}}: {{i.title}} (de: {{i.artist}}){% endverbatim %}">

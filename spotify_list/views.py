@@ -97,11 +97,7 @@ def index(request, country="global"):
     register = template.Library()
     register.filter('json', json.dumps)
 
-
-    # import json
     context = {}
-    # context['country'] = json.dumps(country)
-    # context['songs'] = json.dumps(songs)
     context['country'] = country
     context['songs'] = songs
 
