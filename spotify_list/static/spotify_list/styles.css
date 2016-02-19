@@ -225,6 +225,10 @@ h3 {
     }
 }
 
+.dl-title {
+  margin-bottom: 2em;
+}
+
 .centered-container{
     position: fixed;
     top: 50%;
