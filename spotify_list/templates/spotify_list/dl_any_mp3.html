@@ -9,8 +9,11 @@
 <body>
 
 	<div class="centered-container">
+		<div>
+			<h1><strong>Descarga cualquier canción</strong></h1>
+		</div>
 		<div id="yt_link_input_div">
-			<input id="yt_link_input" type="text" onchange="parse_id()" size="60" placeholder="Introduce aquí link a vídeo de YT."/>
+			<input id="yt_link_input" class="buscador" type="text" onchange="parse_id()" size="40" placeholder="Introduce aquí link a vídeo de YT."/>
 		</div>
 		<div style="margin-top: 1.5em;">
 			<a href="#" id="yt_dl_link">
@@ -20,7 +23,7 @@
 			</a>
 
 			<a href="{% url 'spotify_list:index' %}" id="yt_dl_link">
-	      		<button class="btn btn-default btn-lg btn-warning">Volver al Top de canciones</button>
+	      		<button class="btn btn-default btn-lg btn-warning">Volver</button>
 	      	</a>
 
 		</div>
