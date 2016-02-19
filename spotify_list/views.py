@@ -149,6 +149,12 @@ def download_file(request, yt_id):
     return response
 
 
+def dl_any_mp3(request):
+    context = {}
+    return render(request, 'spotify_list/dl_any_mp3.html', context)
+
+
+
 def download_and_parse_csvs(request):
 
     countries = ['global', 'es', 'us', 'do', 'gb']

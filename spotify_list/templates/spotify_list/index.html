@@ -56,8 +56,14 @@
 <body id="home">
 
   <div class="page-wrap">
-    <div class="content col-md-offset-2 col-md-8">
 
+  <div class="alert alert-success" role="alert">
+    <a href="{% url 'spotify_list:dl_any_mp3' %}" class="alert-link">
+      Nuevo: Extraer MP3 de cualquier vídeo.
+    </a>
+  </div>
+
+    <div class="content col-md-offset-2 col-md-8">
       <h1 class="header">Top 100 canciones de <span class="dropdown">
           <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
             {{ country }}
