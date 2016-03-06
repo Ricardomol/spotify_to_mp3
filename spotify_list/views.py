@@ -3,13 +3,14 @@
 from __future__ import unicode_literals
 from django.http import HttpResponse
 from django.shortcuts import render
+from django import template
 
 import os
 import csv
 import wget
 import logging
 import unicodedata
-
+import json
 import youtube_dl
 
 from apiclient.discovery import build
@@ -91,15 +92,12 @@ def index(request, country="global"):
         song_dict['position'] = pl.songs.position
         songs.append(song_dict)
 
-
-    from django import template
-    import json
     register = template.Library()
     register.filter('json', json.dumps)
 
     context = {}
     context['country'] = country
-    context['songs'] = songs
+    context['songs'] = songs[:100]
 
     return render(request, 'spotify_list/index.html', context)
 
@@ -175,8 +173,7 @@ def download_and_parse_csvs(request):
         songs = []
         with open(csvfile, 'rb') as csvfile:
             reader = csv.reader(csvfile, delimiter=str(u','), quotechar=str(u'"'))
-            for row  in reader:
-                # import pdb; pdb.set_trace()
+            for row in reader:
                 song_dict = {}
                 for i, e in enumerate(row):
                     # print ("Elemento %s = %s" % (i, e))
