@@ -1,3 +1,4 @@
+ 
 html {
   position: relative;
   min-height: 100%;
@@ -5,9 +6,11 @@ html {
 
 body {
   position: static;
-	font-size: 18px;
+  font-size: 18px;
   font-family: 'Source Sans Pro', sans-serif;
   margin: 0 0 40px; /* bottom = footer height */
+  background: url(bg.jpg) no-repeat center center;
+  background-size: cover;
 }
 
 a:link {
@@ -39,44 +42,6 @@ a:visited {
    height: 0;
    clear: both;
 }
-.flash-container {
-	margin-top: 0.25em;
-}
-
-.search-row{
-	margin-top: 0.25em;	
-}
-.search-row input {
-	width:255px;
-}
-
-
-.site-footer {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    height: 35px;
-    width: 100%;
-    margin-top: 1em;
-    text-align: center;
-    border-top: solid 1px #999999;
-}
-
-
-.dropdown-toggle, .dropdown-menu {
-  font-size: 1em;
-}
-
-.btn-lg {
-  margin-left: 0.75em;
-  margin-right: 0.75em;
-}
-
-.embedded-yt, .embedded-spotify {
-  margin-top: 1em;
-  text-align: center;
-  background-color: #CDCDCD;
-}
 
 
 h3 {
@@ -91,13 +56,9 @@ h3 {
   text-align: center;
 }
 
-.song-container {
-  margin-bottom: 2.25em;
-}
-
-
-.alert {
-  text-align: center;
+.btn-lg {
+  margin-left: 0.75em;
+  margin-right: 0.75em;
 }
 
 @media only screen 
@@ -112,7 +73,9 @@ h3 {
 }
 
 .dl-title {
+  margin-top: 1.9em;
   margin-bottom: 2em;
+  font-family: monospace, sans-serif;
 }
 
 .centered-container{
@@ -122,4 +85,8 @@ h3 {
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
     text-align: center;
+	width: 800px;
+	height: 330px;
+	margin: 3em auto;
+	background-color: rgba(255, 255, 255, .6);
 }​
