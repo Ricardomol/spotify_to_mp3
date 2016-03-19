@@ -3,13 +3,14 @@
 from __future__ import unicode_literals
 from django.http import HttpResponse
 from django.shortcuts import render
+from django import template
 
 import os
 import csv
 import wget
 import logging
 import unicodedata
-
+import json
 import youtube_dl
 
 from apiclient.discovery import build
@@ -30,8 +31,9 @@ YOUTUBE_API_VERSION = "v3"
 
 
 def youtube_search(search_string, max_results):
-    youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
-    developerKey=DEVELOPER_KEY)
+    youtube = build(YOUTUBE_API_SERVICE_NAME,
+                    YOUTUBE_API_VERSION,
+                    developerKey=DEVELOPER_KEY)
 
     # Call the search.list method to retrieve results matching the specified
     # query term.
@@ -52,8 +54,6 @@ def youtube_search(search_string, max_results):
         if search_result["id"]["kind"] == "youtube#video":
             videos.append("%s (%s)" % (search_result["snippet"]["title"],
                                         search_result["id"]["videoId"]))
-
-    # print "Videos:\n", "\n".join(videos), "\n"
 
     if search_result is not None and 'videoId' in search_result['id']:
         return (search_result['id']['videoId'])
@@ -82,7 +82,6 @@ def index(request, country="global"):
     songs = []
 
     for pl in pls:
-        print pl.title
         song_dict  = {}
         song_dict['title'] = pl.songs.title
         song_dict['artist'] = pl.songs.artist
@@ -91,14 +90,27 @@ def index(request, country="global"):
         song_dict['position'] = pl.songs.position
         songs.append(song_dict)
 
+    register = template.Library()
+    register.filter('json', json.dumps)
+
     context = {}
     context['country'] = country
-    context['songs'] = songs
+
+    # Remove duplicate songs
+    unique_songs = []
+    for song in songs:
+        if song['position'] not in [unique_song['position'] for unique_song in unique_songs]:
+            unique_songs.append(song)
+
+    # Order list of songs by position field
+    unique_songs = sorted(unique_songs, key=lambda k: k['position'])
+    context['songs'] = unique_songs[:100]
+
     return render(request, 'spotify_list/index.html', context)
 
 
 def download_file(request, yt_id):
-    print "******************++ EN DOWNLOAD FILE 1"
+
     def remove_accents(mystr):
         """Changes accented characters (áüç...) to their unaccented counterparts (auc...)."""
         s = ''.join((c for c in unicodedata.normalize('NFD',unicode(mystr)) if unicodedata.category(c) != 'Mn'))
@@ -107,10 +119,8 @@ def download_file(request, yt_id):
     def hooks(data):
         if data['status'] == 'finished':
             global filename
-            print ("data['filename'] = %s" % data['filename'])
             data['filename'] = remove_accents(data['filename'])
             filename = data['filename']
-            print ("remove_accents(data['filename']) = %s" % data['filename'])
             filename = os.path.splitext(filename)[0]+'.mp3'
             return filename
 
@@ -124,17 +134,9 @@ def download_file(request, yt_id):
         'progress_hooks': [hooks],
         'outtmpl': '%(title)s.%(ext)s'
     }
-    print "******************++ EN DOWNLOAD FILE 1.5"
+
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        print "******************++ EN DOWNLOAD FILE 2"
         ydl.download(['http://www.youtube.com/watch?v='+yt_id])
-
-    print "******************++ EN DOWNLOAD FILE 3"
-
-    # fsock = open('/var/www/django_spotify/django_spotify/'+filename, 'r')
-    # response = HttpResponse(fsock, content_type='audio/mpeg')
-    # response['Content-Disposition'] = "attachment; filename=%s.mp3" % (filename)
-    # return response
 
     try:
         response = HttpResponse()
@@ -146,13 +148,17 @@ def download_file(request, yt_id):
     return response
 
 
+def dl_any_mp3(request):
+    context = {}
+    return render(request, 'spotify_list/dl_any_mp3.html', context)
+
+
 def download_and_parse_csvs(request):
 
     countries = ['global', 'es', 'us', 'do', 'gb']
 
     song_fields = ['position', 'title', 'artist', 'streams', 'spotify_id', 'yt_id']
 
-    # Borrar canciones y playlists anteriores en la bdd
     Playlists.objects.all().delete()
     Songs.objects.all().delete()
 
@@ -170,11 +176,9 @@ def download_and_parse_csvs(request):
         songs = []
         with open(csvfile, 'rb') as csvfile:
             reader = csv.reader(csvfile, delimiter=str(u','), quotechar=str(u'"'))
-            for row  in reader:
-                # import pdb; pdb.set_trace()
+            for row in reader:
                 song_dict = {}
                 for i, e in enumerate(row):
-                    # print ("Elemento %s = %s" % (i, e))
                     song_dict[song_fields[i]] = e.decode('utf-8')
                     if i == len(row) - 1:
                         # Extraer el spotify_id de la url leida del archivo CSV

@@ -7,60 +7,120 @@
   <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" type="text/javascript"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
   {% load staticfiles %}
   <link rel="stylesheet" type="text/css" href="{% static 'spotify_list/styles.css' %}">
   <!--[if IE]>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
+  <script type="text/javascript">
+    // Define a new module for our app. The array holds the names of dependencies if any.
+    var app = angular.module("instantSearch", []);
+
+    // Create the instant search filter
+    app.filter('searchFor', function(){
+
+      // All filters must return a function. The first parameter
+      // is the data that is to be filtered, and the second is an
+      // argument that may be passed with a colon (searchFor:searchString)
+
+      return function(arr, searchString){
+
+        if(!searchString){
+          return arr;
+        }
+
+        var result = [];
+
+        searchString = searchString.toLowerCase();
+
+        // Using the forEach helper method to loop through the array
+        angular.forEach(arr, function(item){
+
+          if(item.title.toLowerCase().indexOf(searchString) !== -1){
+            result.push(item);
+          }
+
+        });
+
+        return result;
+      };
+
+    });
+    // Instant filter search end.
+  </script>
 </head>
+
+{% load spotify_extras %}
 
 <body id="home">
 
   <div class="page-wrap">
+
+  <div class="alert alert-success" role="alert">
+    <a href="{% url 'spotify_list:dl_any_mp3' %}" class="alert-link">
+      Nuevo: Extraer MP3 de cualquier vídeo.
+    </a>
+  </div>
+
     <div class="content col-md-offset-2 col-md-8">
+      <h1 class="header">Top 100 canciones de <span class="dropdown">
+          <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+            {{ country }}
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a href="{% url 'spotify_list:index' 'spain' %}">Spain</a></li>
+            <li><a href="{% url 'spotify_list:index' 'usa' %}"}}>USA</a></li>
+            <li><a href="{% url 'spotify_list:index' 'uk' %}"}}>U.K.</a></li>
+            <li><a href="{% url 'spotify_list:index' 'do' %}">R.D.</a></li>
+            <li><a href="/spotify_list/global"}}>Mundial</a></li>
+          </ul>
+        </span>
+      </h1>
 
-    <h1 class="header">Top 100 canciones de <span class="dropdown">
-        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
-          {{ country }}
-          <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu">
-          <li><a href="{% url 'spotify_list:index' 'spain' %}">Spain</a></li>
-          <li><a href="{% url 'spotify_list:index' 'usa' %}"}}>USA</a></li>
-          <li><a href="{% url 'spotify_list:index' 'uk' %}"}}>U.K.</a></li>
-          <li><a href="{% url 'spotify_list:index' 'do' %}">R.D.</a></li>
-          <li><a href="/spotify_list/global"}}>Mundial</a></li>
-        </ul>
-      </span>
-    </h1>  
-    {% for song in songs %}
-      <div style="border: solid 1px #cdcdcd; vertical-align:middle">
-        <div style = "float:left; font-size:4em; margin-left: 0.2em; margin-right: 0.4em;">
-          {{ song.position }}
+      <div ng-app="instantSearch" ng-init="items={{songs | json}}">
+        <div class="bar buscador">
+          <input type="text" size="40" ng-model="searchString" placeholder="¿Buscas alguna canción?" />
         </div>
-        <div style = "float:left;">
-          <h3><b>{{ song.title }}</b> (de: {{ song.artist }})</h3>
-          <button type="button" class="btn btn-default btn-lg spotify primer-boton" data-spotify_id="{{ song.spotify_id }}">
-            <span class="glyphicon glyphicon-music" aria-hidden="true"></span> - Escuchar en Spotify
-          </button>
 
-          <button type="button" class="btn btn-default btn-lg yt" data-yt_id= "{{ song.yt_id }}">
-            <span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> - Ver vídeo
-          </button>
+        <div class="all-songs-container" ng-repeat="i in items | searchFor: searchString">
+          <div class="song-container" style="min-height: 160px; width:100%;">
+            <div class="primera-fila" style="width:100%; margin-left:10%; font-weight: bold; font-size: 1.5em;">
+              <b>{% verbatim %}{{i.title}}{% endverbatim %}</b>
+            </div>
+            <div class="segunda-fila">
+              <div class="posicion" style="width:10%; float:left; font-weight: bold; font-size: 3.5em;">
+                <b>{% verbatim %}{{i.position}}{% endverbatim %}</b>
+              </div>
+              <div class="artista" style="width:90%;">
+                <b>{% verbatim %}{{i.artist}}{% endverbatim %}</b>
+              </div>
+            </div>
+            <div class="tercera-fila-fila" style="width:100%; margin-left:10%; padding-top: 10px;">
+              <button type="button" class="btn btn-default btn-lg spotify" data-spotify_id="{% verbatim %}{{ i.spotify_id }}{% endverbatim %}">
+                <span class="glyphicon glyphicon-music" aria-hidden="true"></span> - Escuchar en Spotify
+              </button>
 
-          <a href="/spotify_list/download_file/{{song.yt_id}}">
-          <button type="button" class="btn btn-default btn-lg">
-            <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span> - Descargar MP3
-          </button>
-          </a>
 
-          <div class="embedded-spotify" id="{{ song.spotify_id }}"></div>
-          <div class="embedded-yt" id="{{ song.yt_id }}"></div>
+              <button type="button" class="btn btn-default btn-lg yt" data-yt_id= "{% verbatim %}{{ i.yt_id }}{% endverbatim %}">
+                <span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> - Ver vídeo
+              </button>
+
+              <a href="/spotify_list/download_file/{% verbatim %}{{i.yt_id}}{% endverbatim %}">
+              <button type="button" class="btn btn-default btn-lg">
+                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span> - Descargar MP3
+              </button>
+              </a>
+
+              <div class="embedded-spotify" id="{% verbatim %}{{ i.spotify_id }}{% endverbatim %}"></div>
+              <div class="embedded-yt" id="{% verbatim %}{{ i.yt_id }}{% endverbatim %}"></div>
+            </div>
+          </div>
         </div>
-        <div class="clearfix"></div>
+        <br/>
       </div>
-      <br>
-    {% endfor %}
+
     </div>
   </div>
   <div class="clearfix"></div>
@@ -78,7 +138,7 @@
         $('.embedded-spotify').empty();
         var selected_spotify_id = $(this).attr("data-spotify_id");
         var selected_spotify_div = $("#" + selected_spotify_id);
-        selected_spotify_div.append("<iframe src='https://embed.spotify.com/?uri=spotify:track:" + selected_spotify_id + "' width='300' height='80' frameborder='0' allowtransparency='true'></iframe>");
+        selected_spotify_div.append("<iframe src='https://embed.spotify.com/?uri=spotify:track:" + selected_spotify_id + "' width='640' height='80' frameborder='0' allowtransparency='true'></iframe>");
       });
       
       $('.yt').click(function(e){
@@ -90,8 +150,44 @@
         selected_yt_div.append("<iframe width='640' height='390' allowfullscreen src='http://www.youtube.com/embed/" + selected_yt_id + "?&playsinline=1&autoplay=1" + "'></iframe>");
       });
 
+  });
+
+
+/*  // Define a new module for our app. The array holds the names of dependencies if any.
+  var app = angular.module("instantSearch", []);
+
+  // Create the instant search filter
+  app.filter('searchFor', function(){
+
+    // All filters must return a function. The first parameter
+    // is the data that is to be filtered, and the second is an
+    // argument that may be passed with a colon (searchFor:searchString)
+
+    return function(arr, searchString){
+
+      if(!searchString){
+        return arr;
+      }
+
+      var result = [];
+
+      searchString = searchString.toLowerCase();
+
+      // Using the forEach helper method to loop through the array
+      angular.forEach(arr, function(item){
+
+        if(item.title.toLowerCase().indexOf(searchString) !== -1){
+          result.push(item);
+        }
+
+      });
+
+      return result;
+    };
 
   });
+  // Instant filter search end.*/
+
   </script>
 
 </body>
