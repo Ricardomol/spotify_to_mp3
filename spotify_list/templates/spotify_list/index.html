@@ -37,7 +37,8 @@
         // Using the forEach helper method to loop through the array
         angular.forEach(arr, function(item){
 
-          if(item.title.toLowerCase().indexOf(searchString) !== -1){
+          if((item.title.toLowerCase().indexOf(searchString) !== -1) || 
+              (item.artist.toLowerCase().indexOf(searchString) !== -1) ){
             result.push(item);
           }
 
@@ -81,7 +82,7 @@
 
       <div ng-app="instantSearch" ng-init="items={{songs | json}}">
         <div class="bar buscador">
-          <input type="text" size="40" ng-model="searchString" placeholder="¿Buscas alguna canción?" />
+          <input type="text" size="40" ng-model="searchString" placeholder="¿Buscas alguna canción o artista?" />
         </div>
 
         <div class="all-songs-container" ng-repeat="i in items | searchFor: searchString">
@@ -138,7 +139,7 @@
         $('.embedded-spotify').empty();
         var selected_spotify_id = $(this).attr("data-spotify_id");
         var selected_spotify_div = $("#" + selected_spotify_id);
-        selected_spotify_div.append("<iframe src='https://embed.spotify.com/?uri=spotify:track:" + selected_spotify_id + "' width='640' height='80' frameborder='0' allowtransparency='true'></iframe>");
+        selected_spotify_div.html("<iframe src='https://embed.spotify.com/?uri=spotify:track:" + selected_spotify_id + "' width='640' height='80' frameborder='0' allowtransparency='true'></iframe>");
       });
       
       $('.yt').click(function(e){
@@ -147,7 +148,7 @@
         $('.embedded-spotify').empty();
         var selected_yt_id = $(this).attr("data-yt_id");
         var selected_yt_div = $("#" + selected_yt_id);
-        selected_yt_div.append("<iframe width='640' height='390' allowfullscreen src='http://www.youtube.com/embed/" + selected_yt_id + "?&playsinline=1&autoplay=1" + "'></iframe>");
+        selected_yt_div.html("<iframe width='640' height='390' allowfullscreen src='http://www.youtube.com/embed/" + selected_yt_id + "?&playsinline=1&autoplay=1" + "'></iframe>");
       });
 
   });
