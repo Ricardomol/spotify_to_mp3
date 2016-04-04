@@ -122,6 +122,7 @@ def download_file(request, yt_id):
             data['filename'] = remove_accents(data['filename'])
             filename = data['filename']
             filename = os.path.splitext(filename)[0]+'.mp3'
+            filename = '"' + filename + '"'
             return filename
 
     ydl_opts = {
