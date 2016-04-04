@@ -119,7 +119,7 @@ def download_file(request, yt_id):
     def hooks(data):
         if data['status'] == 'finished':
             global filename
-            data['filename'] = remove_accents(data['filename']).replace(",", "")
+            data['filename'] = '"'+remove_accents(data['filename']).replace(",", "")+'"'
             filename = data['filename']
             filename = os.path.splitext(filename)[0]+'.mp3'
             return filename
