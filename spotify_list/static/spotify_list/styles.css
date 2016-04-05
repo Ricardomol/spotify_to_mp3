@@ -1,3 +1,6 @@
+/*Solves the blank space at the right on mobile deives issue.*/
+html, body { overflow-x: hidden; }
+
 html {
   position: relative;
   min-height: 100%;
@@ -45,7 +48,7 @@ a:visited {
 }
 
 .search-row{
-	margin-top: 0.25em;	
+	margin-top: 0.25em;
 }
 .search-row input {
 	width:255px;
@@ -137,8 +140,8 @@ h3 {
   text-align: center;
 }
 
-@media only screen 
-  and (min-device-width: 320px) 
+@media only screen
+  and (min-device-width: 320px)
   and (max-device-width: 667px){
     .song-container {
       margin-bottom: 2em;
