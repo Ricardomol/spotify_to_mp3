@@ -164,12 +164,11 @@ def download_and_parse_csvs(request):
 
     for country in countries:
 
-        url = 'https://spotifycharts.com/api/?download=true&limit=100&country='+country+'&recurrence=daily&date=latest&type=regional'
+        url = 'https://spotifycharts.com/regional/'+country+'/daily/latest/download'
 
         pl_title = "Top 100 " + country
         pl_spotify_id = "NA"
 
-        # Download the CSV file from Spotify
         csvfile = wget.download(url)
 
         # Parse the CSV file
@@ -177,6 +176,7 @@ def download_and_parse_csvs(request):
         with open(csvfile, 'rb') as csvfile:
             reader = csv.reader(csvfile, delimiter=str(u','), quotechar=str(u'"'))
             for row in reader:
+                print ("Parseando la row = %s" % row)
                 song_dict = {}
                 for i, e in enumerate(row):
                     song_dict[song_fields[i]] = e.decode('utf-8')
@@ -184,20 +184,23 @@ def download_and_parse_csvs(request):
                         # Extraer el spotify_id de la url leida del archivo CSV
                         song_dict[song_fields[i]] = e.decode('utf-8').rsplit('/', 1)[-1]
 
+                if song_dict['position'] == "100":
+                    break
+
                 # buscar en Youtube el video correspondiente a cada canción
                 try:
                     song_dict[song_fields[len(song_fields)-1]] = youtube_search(song_dict['title']+' '+song_dict['artist'], 1)
 
                     try:
                         s = Songs(position = song_dict['position'],
-                                    title = song_dict['title'],
-                                    artist = song_dict['artist'],
-                                    yt_id = song_dict['yt_id'],
-                                    spotify_id = song_dict['spotify_id'])
+                                  title = song_dict['title'],
+                                  artist = song_dict['artist'],
+                                  yt_id = song_dict['yt_id'],
+                                  spotify_id = song_dict['spotify_id'])
                         s.save()
 
                         pl = Playlists(title = pl_title,
-                                        songs = s)
+                                       songs = s)
                         pl.save()
                     except ValueError, e:
                         print "Pass"
