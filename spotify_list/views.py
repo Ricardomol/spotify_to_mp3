@@ -17,7 +17,7 @@ from apiclient.discovery import build
 from apiclient.errors import HttpError
 from oauth2client.tools import argparser
 
-from spotify_list.models import Songs, Playlists
+from spotify_list.models import Song, Playlist
 
 
 
@@ -77,7 +77,7 @@ def index(request, country="global"):
     else:
         pl_search_term = 'Top 100 global'
 
-    pls = Playlists.objects.filter(title = pl_search_term)
+    pls = Playlist.objects.filter(title = pl_search_term)
 
     songs = []
 
@@ -159,8 +159,8 @@ def download_and_parse_csvs(request):
 
     song_fields = ['position', 'title', 'artist', 'streams', 'spotify_id', 'yt_id']
 
-    Playlists.objects.all().delete()
-    Songs.objects.all().delete()
+    Playlist.objects.all().delete()
+    Song.objects.all().delete()
 
     for country in countries:
 
@@ -192,15 +192,15 @@ def download_and_parse_csvs(request):
                     song_dict[song_fields[len(song_fields)-1]] = youtube_search(song_dict['title']+' '+song_dict['artist'], 1)
 
                     try:
-                        s = Songs(position = song_dict['position'],
-                                  title = song_dict['title'],
-                                  artist = song_dict['artist'],
-                                  yt_id = song_dict['yt_id'],
-                                  spotify_id = song_dict['spotify_id'])
+                        s = Song(position = song_dict['position'],
+                                 title = song_dict['title'],
+                                 artist = song_dict['artist'],
+                                 yt_id = song_dict['yt_id'],
+                                 spotify_id = song_dict['spotify_id'])
                         s.save()
 
-                        pl = Playlists(title = pl_title,
-                                       songs = s)
+                        pl = Playlist(title = pl_title,
+                                      songs = s)
                         pl.save()
                     except ValueError, e:
                         print "Pass"
