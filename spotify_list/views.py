@@ -153,7 +153,7 @@ def download_and_parse_csvs(request):
                         # Extraer el spotify_id de la url leida del archivo CSV
                         song_dict[song_fields[i]] = e.decode('utf-8').rsplit('/', 1)[-1]
 
-                if song_dict['position'] == "100":
+                if song_dict['position'] == "101":
                     break
 
                 # buscar en Youtube el video correspondiente a cada canción
@@ -172,7 +172,7 @@ def download_and_parse_csvs(request):
                                       songs = s)
                         pl.save()
                     except ValueError, e:
-                        print "Pass"
+                        print "Pass: %s" % e
 
                 except HttpError, e:
                     print "An HTTP error %d occurred:\n%s" % (e.resp.status, e.content)
@@ -204,7 +204,7 @@ class SongListView(ListView):
     def get_queryset(self, **kwargs):
         country = self.kwargs.get("country", "global")
         pl_search_term = country_code_to_search_term(country)       
-        queryset = Song.objects.filter(playlist__title=pl_search_term).order_by('position')
+        queryset = Song.objects.filter(playlist__title=pl_search_term).order_by('position').distinct('position')
         return queryset
 
 # class SongDetailView(DetailView):
