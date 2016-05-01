@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.http import HttpResponse
 from django.shortcuts import render
 from django import template
+from django.views.generic import ListView, DetailView
 
 import os
 import csv
@@ -61,52 +62,20 @@ def youtube_search(search_string, max_results):
         return("")
 
 
-def index(request, country="global"):
-
-    # Download the CSV file from Spotify
-    if country == "do":
-        pl_search_term = 'Top 100 do'
-    elif country == "spain":
-        pl_search_term = 'Top 100 es'
-    elif country == "usa":
-        pl_search_term = 'Top 100 us'
-    elif country == "uk":
-        pl_search_term = 'Top 100 gb'
-    elif country == "global":
-        pl_search_term = 'Top 100 global'
-    else:
-        pl_search_term = 'Top 100 global'
-
-    pls = Playlist.objects.filter(title = pl_search_term)
-
-    songs = []
-
-    for pl in pls:
-        song_dict  = {}
-        song_dict['title'] = pl.songs.title
-        song_dict['artist'] = pl.songs.artist
-        song_dict['yt_id'] = pl.songs.yt_id
-        song_dict['spotify_id'] = pl.songs.spotify_id
-        song_dict['position'] = pl.songs.position
-        songs.append(song_dict)
-
-    register = template.Library()
-    register.filter('json', json.dumps)
-
-    context = {}
-    context['country'] = country
-
-    # Remove duplicate songs
-    unique_songs = []
-    for song in songs:
-        if song['position'] not in [unique_song['position'] for unique_song in unique_songs]:
-            unique_songs.append(song)
-
-    # Order list of songs by position field
-    unique_songs = sorted(unique_songs, key=lambda k: k['position'])
-    context['songs'] = unique_songs[:100]
-
-    return render(request, 'spotify_list/index.html', context)
+def country_code_to_search_term(country_code):
+        if country_code == "do":
+            pl_search_term = 'Top 100 do'
+        elif country_code == "spain":
+            pl_search_term = 'Top 100 es'
+        elif country_code == "usa":
+            pl_search_term = 'Top 100 us'
+        elif country_code == "uk":
+            pl_search_term = 'Top 100 gb'
+        elif country_code == "global":
+            pl_search_term = 'Top 100 global'
+        else:
+            pl_search_term = 'Top 100 global' 
+        return pl_search_term
 
 
 def download_file(request, yt_id):
@@ -222,3 +191,27 @@ def borrar_mp3_y_csv (request):
         os.remove(f)
     context = {}
     return render(request, 'spotify_list/borrar_mp3_y_csv.html', context)
+
+
+class SongListView(ListView):
+    model = Song
+
+    def get_context_data(self, **kwargs):
+        context = super(SongListView, self).get_context_data(**kwargs)
+        context['country'] = self.kwargs.get("country", "global")
+        return context
+
+    def get_queryset(self, **kwargs):
+        country = self.kwargs.get("country", "global")
+        pl_search_term = country_code_to_search_term(country)       
+        queryset = Song.objects.filter(playlist__title=pl_search_term).order_by('position')
+        return queryset
+
+# class SongDetailView(DetailView):
+#     model = Song
+
+#     def get_context_data(self, **kwargs):
+#         context = super(SongListView, self).get_context_data(**kwargs)
+#         context['country'] = self.kwargs.get("country", "global")
+#         print("context['object_list'] = %s" % context["object_list"])
+#         return context

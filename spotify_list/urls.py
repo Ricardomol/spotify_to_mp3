@@ -19,8 +19,8 @@ from . import views
 
 app_name = 'spotify_list'
 urlpatterns = [
-    url(r'^$', views.index, name = 'index'),
-    url(r'^(?P<country>[a-z]*)$', views.index, name = 'index'),
+    url(r'^$', views.SongListView.as_view(), name='index'),
+    url(r'^(?P<country>[a-z]*)$', views.SongListView.as_view(), name = 'index'),
     url(r'^download_file/(?P<yt_id>[-\w]+)', views.download_file, name = 'download_file'),
     url(r'^update_lists$', views.download_and_parse_csvs, name='dl_and_parse'),
     url(r'^borrar_mp3_y_csv$', views.borrar_mp3_y_csv, name='borrar_mp3_y_csv'),

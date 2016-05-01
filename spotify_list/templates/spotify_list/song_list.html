@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Top Spotify Songs to MP3</title>
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700|Merriweather:400italic,400,700' rel='stylesheet' type='text/css'>
+  <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" type="text/javascript"></script>
+  {% load staticfiles %}
+  <link rel="stylesheet" type="text/css" href="{% static 'spotify_list/styles.css' %}">
+  <!--[if IE]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+
+{% load spotify_extras %}
+
+<body id="home">
+
+  <div class="page-wrap">
+
+  <div class="alert alert-success" role="alert">
+    <a href="{% url 'spotify_list:dl_any_mp3' %}" class="alert-link">
+      Nuevo: Extraer MP3 de cualquier vídeo.
+    </a>
+  </div>
+    <div class="content col-md-offset-2 col-md-8">
+      <h1 class="header">Top 100 canciones de <span class="dropdown">
+          <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+            {{ country }}
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a href="{% url 'spotify_list:index' 'spain' %}">Spain</a></li>
+            <li><a href="{% url 'spotify_list:index' 'usa' %}"}}>USA</a></li>
+            <li><a href="{% url 'spotify_list:index' 'uk' %}"}}>U.K.</a></li>
+            <li><a href="{% url 'spotify_list:index' 'do' %}">R.D.</a></li>
+            <li><a href="/spotify_list/global"}}>Mundial</a></li>
+          </ul>
+        </span>
+      </h1>
+
+      <div>
+        <div class="bar buscador">
+          <input type="text" size="40" placeholder="¿Buscas alguna canción o artista?" />
+        </div>
+
+        <div class="all-songs-container">
+          {% for song in object_list %}
+          <div class="song-container" style="min-height: 160px; width:100%;">
+            <div class="primera-fila" style="width:100%; margin-left:10%; font-weight: bold; font-size: 1.5em;">
+              <b>{{song.title}}</b>
+            </div>
+            <div class="segunda-fila">
+              <div class="posicion" style="width:10%; float:left; font-weight: bold; font-size: 3.5em; color: #707070;">
+                <b>{{song.position}}</b>
+              </div>
+              <div class="artista" style="width:90%; color: #707070;">
+                <b>{{song.artist}}</b>
+              </div>
+            </div>
+            <div class="tercera-fila" style="width:100%; margin-left:10%; padding-top: 10px;">
+              <button type="button" class="btn btn-default btn-lg spotify" data-spotify_id="{{song.spotify_id}}">
+                <span class="glyphicon glyphicon-music" aria-hidden="true"></span> - Escuchar en Spotify
+              </button>
+
+
+              <button type="button" class="btn btn-default btn-lg yt" data-yt_id="{{song.yt_id}}">
+                <span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span> - Ver vídeo
+              </button>
+
+              <a href="/spotify_list/download_file/{{song.yt_id}}">
+              <button type="button" class="btn btn-default btn-lg">
+                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true"></span> - Descargar MP3
+              </button>
+              </a>
+
+              <div class="embedded-spotify" id="{{song.spotify_id}}"></div>
+              <div class="embedded-yt" id="{{song.yt_id}}"></div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <br/>
+      </div>
+
+    </div>
+  </div>
+  <div class="clearfix"></div>
+
+  <div class="site-footer">
+  Site by: <a target="_blank" href="http://ricardomol.com">Ricardo Molina</a>.
+  </div>
+
+  <script type="text/javascript">
+  $(function(){
+
+      $('.spotify').click(function(e){
+        e.preventDefault();
+        $('.embedded-yt').empty();
+        $('.embedded-spotify').empty();
+        var selected_spotify_id = $(this).attr("data-spotify_id");
+        var selected_spotify_div = $("#" + selected_spotify_id);
+        selected_spotify_div.html("<iframe src='https://embed.spotify.com/?uri=spotify:track:" + selected_spotify_id + "' width='640' height='80' frameborder='0' allowtransparency='true'></iframe>");
+      });
+      
+      $('.yt').click(function(e){
+        e.preventDefault();
+        $('.embedded-yt').empty();
+        $('.embedded-spotify').empty();
+        var selected_yt_id = $(this).attr("data-yt_id");
+        var selected_yt_div = $("#" + selected_yt_id);
+        selected_yt_div.html("<iframe width='640' height='390' allowfullscreen src='http://www.youtube.com/embed/" + selected_yt_id + "?&playsinline=1&autoplay=1" + "'></iframe>");
+      });
+
+  });
+
+  </script>
+
+</body>
+</html>
