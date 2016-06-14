@@ -43,21 +43,21 @@
 
       <div>
         <div class="bar buscador">
-          <input type="text" size="40" placeholder="¿Buscas alguna canción o artista?" />
+          <input type="text" size="40" onkeyup="InstantSearch(this)" placeholder="¿Buscas alguna canción o artista?" />
         </div>
 
         <div class="all-songs-container">
           {% for song in object_list %}
-          <div class="song-container" style="min-height: 160px; width:100%;">
+          <div class="song-container searchable" style="min-height: 160px; width:100%;">
             <div class="primera-fila" style="width:100%; margin-left:10%; font-weight: bold; font-size: 1.5em;">
-              <b>{{song.title}}</b>
+              <b class="titulo-cancion">{{song.title}}</b>
             </div>
             <div class="segunda-fila">
               <div class="posicion" style="width:10%; float:left; font-weight: bold; font-size: 3.5em; color: #707070;">
                 <b>{{song.position}}</b>
               </div>
               <div class="artista" style="width:90%; color: #707070;">
-                <b>{{song.artist}}</b>
+                <b class="artista-cancion">{{song.artist}}</b>
               </div>
             </div>
             <div class="tercera-fila" style="width:100%; margin-left:10%; padding-top: 10px;">
@@ -94,6 +94,19 @@
   </div>
 
   <script type="text/javascript">
+
+  function InstantSearch (search_input) {
+    search_text = search_input.value.toLowerCase();
+
+    var exp = new RegExp(search_text, 'i');
+
+    $('.searchable').each(function() {
+      var isMatch = exp.test($('.titulo-cancion', this).text()) || exp.test($('.artista-cancion', this).text());
+      $(this).toggle(isMatch);
+    });
+  };
+
+
   $(function(){
 
       $('.spotify').click(function(e){
